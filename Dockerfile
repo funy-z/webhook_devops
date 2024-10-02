@@ -12,7 +12,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 暴露端口
-EXPOSE 8000
+EXPOSE 9081
 
 # 运行 FastAPI 应用
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "9081"]
+CMD ["uvicorn", "app/main.py"]
