@@ -6,6 +6,7 @@ import logging
 import os
 import uvicorn
 import sys
+from fastapi.middleware.cors import CORSMiddleware
 # 动态修改 sys.path，添加当前目录的父目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
@@ -14,6 +15,15 @@ sys.path.append(parent_dir)
 from app.utils import verify_signature
 
 app = FastAPI()
+# 允许跨域
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
 
 @app.post("/webhook")
 async def webhook(request: Request):

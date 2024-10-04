@@ -1,1 +1,1 @@
-docker run -it -p 9081:9081 webhook_devops:latest
+docker-compose -f /devops/webhook_devops/docker-compose.yml up -d

@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  ai_webhook:
+    image: webhook_devops:latest
+    ports:
+      - "9081:9081"
+
