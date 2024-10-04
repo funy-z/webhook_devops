@@ -1,1 +1,1 @@
-docker-compose -f /devops/webhook_devops/docker-compose.yml down
+docker-compose -f ./docker-compose.yml down
