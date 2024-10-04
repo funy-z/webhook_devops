@@ -5,4 +5,14 @@ services:
     image: webhook_devops:latest
     ports:
       - "9081:9081"
+    volumes:
+      - ai_webhook_log:/app/logs
 
+volumns:
+  ai_webhook_log:
+    driver: local
+    driver_opts:
+      type: none
+      device: /devops/logs
+      o: bind
+    

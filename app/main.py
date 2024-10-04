@@ -14,6 +14,12 @@ sys.path.append(parent_dir)
 
 from app.utils import verify_signature
 
+logging.basicConfig(
+    filename='logs/app.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
 app = FastAPI()
 # 允许跨域
 app.add_middleware(
