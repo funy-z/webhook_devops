@@ -30,7 +30,9 @@ async def webhook(request: Request):
     payload = await request.body()
     signature = request.headers.get('X-Hub-Signature-256')
     logging.info(f"webhook payload: {str(payload)}")
+    logging.info(f"webhook signature: {signature}")
     if not verify_signature(payload, signature):
+        logging.info(f"verify_signature no pass!")
         raise HTTPException(status_code=403, detail="Forbidden")
     
     # 拉取最新代码并构建镜像
