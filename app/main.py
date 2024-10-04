@@ -109,18 +109,22 @@ async def webhook(request: Request):
     # 4. repository_abs_path 目录， 存在：执行run_command(['git', 'pull'], cwd=repository_abs_path);
     # 不存在：执行run_command(['git', 'clone', repo_path]， cmd=docker_abs_path)
     docker_abs_path = os.path.abspath(docker_path)
+    logger.info(f"docker_abs_path: {docker_abs_path}")
     if not os.path.exists(docker_abs_path):
        os.makedirs(docker_abs_path)
        logger.info(f"docker_abs_path: {docker_abs_path} not exist, created it!")
     
     repository_abs_path = os.path.join(docker_abs_path, repository_name)
+    logger.info(f"repository_abs_path: {repository_abs_path}")
     if not os.path.exists(repository_abs_path):
+        logger.info(f"repository_abs_path: {repository_abs_path} not exists!")
         try:
           run_command(['git', 'clone', repo_path], cwd=docker_abs_path)
         except Exception as e:
           logging.error(f"Git clone failed: {str(e)}")
           return { "message": "Git clone failed" }
     else:
+        logger.info(f"repository_abs_path: {repository_abs_path} exists!")
         try:
           run_command(['git', 'pull'], cwd=repository_abs_path)
         except Exception as e:
