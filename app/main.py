@@ -7,6 +7,7 @@ import os
 import uvicorn
 import sys
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
 # 动态修改 sys.path，添加当前目录的父目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
@@ -19,6 +20,9 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
+
+# 加载 .env 文件
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 app = FastAPI()
 # 允许跨域
@@ -42,9 +46,9 @@ async def webhook(request: Request):
         raise HTTPException(status_code=403, detail="Forbidden")
     
     # 拉取最新代码并构建镜像
-    repo_path = os.getenv("REPO_PATH", "/path/to/your/repo")
-    image_name = os.getenv("IMAGE_NAME", "your-image-name")
-    container_name = os.getenv("CONTAINER_NAME", "your-container-name")
+    repo_path = os.getenv("REPO_PATH", "REPO_PATH_empty")
+    image_name = os.getenv("IMAGE_NAME", "IMAGE_NAME_empy")
+    container_name = os.getenv("CONTAINER_NAME", "CONTAINER_NAME_empty")
     logging.info(f"repo_path:{repo_path}")
     logging.info(f"image_name: {image_name}")
     logging.info(f"container_name: {container_name}")
@@ -57,6 +61,7 @@ async def webhook(request: Request):
 
 @app.get("/")
 async def root(request: Request):
+    print('root_msg', os.getenv("GITHUB_SECRET", "your_secret_empty"))
     return { "message": "Read root path success" }
 
 if __name__ == "__main__":
