@@ -1,11 +1,7 @@
-# 停止容器服务
+#!/bin/bash
+
+# 查找并停止已经运行的 FastAPI 服务
 ./stop.sh
 
-# 删除latest镜像
-docker image rm webhook_devops:latest
-
-# 构建新镜像
-./build_image.sh
-
-# 重新启动docker-compose
+# 执行 start.sh 重新启动服务
 ./start.sh
