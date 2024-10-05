@@ -18,7 +18,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from app.utils import verify_signature, run_command
+from app.utils import verify_signature, run_command, prune_dangling_images
 
 logging.basicConfig(
     filename='logs/app.log',
@@ -133,14 +133,22 @@ async def webhook(request: Request):
 
     try:
       logger.info(f"start docker build, image_name: {image_name}")
+      # 这里构建成功后，之前的image_name会变成虚悬镜像
       run_command(['docker', 'build', '-t', image_name, '.'], cwd=repository_abs_path)
       logger.info(f"end docker build")
-      logger.info(f"start docker run, container_name:{container_name}, image_name: {image_name}")
-      run_command(['docker', 'run', '-d', '--name', container_name, '-p', '80:80', image_name])
-      logger.info(f"end docker run")
+      # logger.info(f"start docker run, container_name:{container_name}, image_name: {image_name}")
+      # run_command(['docker', 'run', '-d', '--name', container_name, '-p', '80:80', image_name])
+      # logger.info(f"end docker run")
     except Exception as e:
       logging.error(f"An error occurred exec docker: {str(e)}")
       return { "message": "Docker command failed" }
+    
+    # 删除虚悬镜像
+    try:
+      prune_dangling_images()
+    except Exception as e:
+      logging.error(f"An error occurred prune_dangling_images: {str(e)}")
+      return { "message": "prune_dangling_images() failed" }
     
     return {"message": "Success"}
 

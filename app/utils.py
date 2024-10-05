@@ -21,3 +21,23 @@ def run_command(command, cwd=None):
         logging.error(f"stdout: {e.stdout}")
         logging.error(f"stderr: {e.stderr}")
         raise
+
+# 清理虚悬镜像
+def prune_dangling_images():
+    try:
+        # 执行 docker image prune -f 命令
+        result = subprocess.run(['docker', 'image', 'prune', '-f'], 
+                                stdout=subprocess.PIPE, 
+                                stderr=subprocess.PIPE, 
+                                text=True)
+        
+        # 检查命令的退出状态
+        if result.returncode == 0:
+            logging.info("Successfully pruned dangling images.")
+            logging.info(result.stdout)
+        else:
+            logging.error("Failed to prune dangling images.")
+            logging.error(result.stderr)
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
+        raise
