@@ -121,14 +121,14 @@ async def webhook(request: Request):
         try:
           run_command(['git', 'clone', repo_path], cwd=docker_abs_path)
         except Exception as e:
-          logging.error(f"Git clone failed: {str(e)}")
+          logger.exception(f"Git clone failed: {str(e)}")
           return { "message": "Git clone failed" }
     else:
         logger.info(f"repository_abs_path: {repository_abs_path} exists!")
         try:
           run_command(['git', 'pull'], cwd=repository_abs_path)
         except Exception as e:
-          logging.error(f"Git pull failed: {str(e)}")
+          logger.exception(f"Git pull failed: {str(e)}")
           return { "message": "Git pull failed" }
 
     try:

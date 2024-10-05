@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -d ".venv"]; then
+if [ ! -d ".venv" ]; then
   echo ".venv 不存在，正在创建虚拟环境..."
   python -m venv .venv
   echo ".venv 虚拟环境创建完成!"
