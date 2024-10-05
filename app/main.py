@@ -132,8 +132,12 @@ async def webhook(request: Request):
           return { "message": "Git pull failed" }
 
     try:
+      logger.info(f"start docker build, image_name: {image_name}")
       run_command(['docker', 'build', '-t', image_name, '.'], cwd=repository_abs_path)
+      logger.info(f"end docker build")
+      logger.info(f"start docker run, container_name:{container_name}, image_name: {image_name}")
       run_command(['docker', 'run', '-d', '--name', container_name, '-p', '80:80', image_name])
+      logger.info(f"end docker run")
     except Exception as e:
       logging.error(f"An error occurred exec docker: {str(e)}")
       return { "message": "Docker command failed" }
