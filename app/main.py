@@ -136,9 +136,6 @@ async def webhook(request: Request):
       # 这里构建成功后，之前的image_name会变成虚悬镜像
       run_command(['docker', 'build', '-t', image_name, '.'], cwd=repository_abs_path)
       logger.info(f"end docker build")
-      # logger.info(f"start docker run, container_name:{container_name}, image_name: {image_name}")
-      # run_command(['docker', 'run', '-d', '--name', container_name, '-p', '80:80', image_name])
-      # logger.info(f"end docker run")
     except Exception as e:
       logging.error(f"An error occurred exec docker: {str(e)}")
       return { "message": "Docker command failed" }
@@ -149,6 +146,17 @@ async def webhook(request: Request):
     except Exception as e:
       logging.error(f"An error occurred prune_dangling_images: {str(e)}")
       return { "message": "prune_dangling_images() failed" }
+    
+    # 更新docker-compose中的ai-composiso-backend
+    try:
+      # docker-compose -f docker-compose.yml up -d --no-deps ai-composiso-backend
+      logger.info(f"update docker-compose, container_name:{container_name}, image_name: {image_name}")
+      run_command(['docker-compose', '-f', '/app/docker-compose.yml', 'up', 
+                   '-d', '--no-deps', 'ai-composiso-backend'])
+      logger.info(f"end update docker-compose")
+    except Exception as e:
+      logging.error(f"An error occurred update docker-compose: {str(e)}")
+      return { "message": "Update docker-compose failed" }
     
     return {"message": "Success"}
 
