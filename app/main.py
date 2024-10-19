@@ -1,5 +1,5 @@
 from utils import verify_signature
-from ops_build import exec_build
+from ops_build import exec_build, exec_build_frontend
 from fastapi import Body, FastAPI, Request, HTTPException
 import logging
 import os
@@ -95,6 +95,31 @@ async def webhook(request: Request):
     repository_info = payload_info["repository"]
     # 启动线程执行构建
     executor.submit(exec_build, repository_info)
+
+    return {"message": "Success"}
+
+
+@app.post("/webhook_github_action")
+async def webhook_github_action(request: Request):
+    payload = await request.body()
+    logging.info(f"webhook payload: {str(payload)}")
+
+    payload_str = payload.decode('utf-8')
+
+    try:
+        payload_info = json.loads(payload_str)
+    except Exception as e:
+        logger.exception(f"json.loads failed(1): {str(e)}")
+        payload_str = payload_str.replace('\\', '\\\\')
+        try:
+            payload_info = json.loads(payload_str)
+        except Exception as inner_e:
+            logger.exception(f"json.loads failed(2): {str(inner_e)}")
+            return {"message": "json.loads failed"}
+
+    repository_info = payload_info["repository"]
+    # 启动线程执行构建
+    executor.submit(exec_build_frontend, repository_info)
 
     return {"message": "Success"}
 

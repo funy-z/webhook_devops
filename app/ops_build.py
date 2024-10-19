@@ -91,3 +91,37 @@ def exec_build(repository_info):
     except Exception as e:
         logging.error(f"An error occurred update docker-compose: {str(e)}")
         return {"message": "Update docker-compose failed"}
+
+
+def exec_build_frontend(repository_info):
+    repository_name = repository_info["repository_name"]
+    env_info = get_env_info(repository_name)
+    image_name = env_info["image_name"]
+    container_name = env_info["container_name"]
+    # 拉取最新镜像
+    try:
+        logger.info(f"start docker pull, image_name:{image_name}")
+        run_command(['docker', 'pull', image_name])
+        logger.info(f"end docker pull, image_name:{image_name}")
+    except Exception as e:
+        logging.error(f"An error occurred exec docker pull: {str(e)}")
+        return {"message": "Docker pull command failed"}
+
+    # 删除虚悬镜像
+    try:
+        prune_dangling_images()
+    except Exception as e:
+        logging.error(f"An error occurred prune_dangling_images: {str(e)}")
+        return {"message": "prune_dangling_images() failed"}
+
+    # 更新docker-compose中的ai-composiso-backend
+    try:
+        # docker-compose -f docker-compose.yml up -d --no-deps ai-composiso-frontend
+        logger.info(
+            f"update docker-compose, container_name:{container_name}, image_name: {image_name}")
+        run_command(['docker-compose', '-f', '/app/docker-compose.yml', 'up',
+                     '-d', '--no-deps', container_name])
+        logger.info(f"end update docker-compose")
+    except Exception as e:
+        logging.error(f"An error occurred update docker-compose: {str(e)}")
+        return {"message": "Update docker-compose failed"}
