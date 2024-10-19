@@ -117,7 +117,7 @@ async def webhook_github_action(request: Request):
             logger.exception(f"json.loads failed(2): {str(inner_e)}")
             return {"message": "json.loads failed"}
 
-    repository_info = payload_info["repository"]
+    repository_info = payload_info["data"]
     # 启动线程执行构建
     executor.submit(exec_build_frontend, repository_info)
 
