@@ -116,7 +116,7 @@ async def webhook_github_action(request: Request):
         except Exception as inner_e:
             logger.exception(f"json.loads failed(2): {str(inner_e)}")
             return {"message": "json.loads failed"}
-    secret_param = payload["secret"]
+    secret_param = payload_info["secret"]
     secret = os.getenv("GITHUB_SECRET", "your_secret_empty")
     logger.info(f"secret compare, secret_param: "
                 f"{secret_param}, secret: {secret}")
