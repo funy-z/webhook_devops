@@ -9,7 +9,7 @@
       "console": "integratedTerminal",
       "args": [],
       "jinja": true,
-      "justMyCode": true
+      "justMyCode": false
     }
   ]
 }
