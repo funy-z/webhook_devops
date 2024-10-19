@@ -86,7 +86,7 @@ def exec_build(repository_info):
         logger.info(
             f"update docker-compose, container_name:{container_name}, image_name: {image_name}")
         run_command(['docker-compose', '-f', '/app/docker-compose.yml', 'up',
-                     '-d', '--no-deps', 'ai-composiso-backend'])
+                     '-d', '--no-deps', container_name])
         logger.info(f"end update docker-compose")
     except Exception as e:
         logging.error(f"An error occurred update docker-compose: {str(e)}")
