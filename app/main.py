@@ -13,6 +13,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 import json
 
+# 动态修改 sys.path，添加当前目录的父目录
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+
 logging.basicConfig(
     filename='logs/app.log',
     level=logging.INFO,
@@ -70,9 +75,9 @@ async def webhook(request: Request):
     signature = request.headers.get('X-Hub-Signature-256')
     logging.info(f"webhook payload: {str(payload)}")
     logging.info(f"webhook signature: {signature}")
-    # if not verify_signature(payload, signature):
-    #     logging.info(f"verify_signature no pass!")
-    #     raise HTTPException(status_code=403, detail="Forbidden")
+    if not verify_signature(payload, signature):
+        logging.info(f"verify_signature no pass!")
+        raise HTTPException(status_code=403, detail="Forbidden")
 
     payload_str = payload.decode('utf-8')
 
