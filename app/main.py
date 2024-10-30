@@ -93,6 +93,9 @@ async def webhook(request: Request):
             return {"message": "json.loads failed"}
 
     repository_info = payload_info["repository"]
+    action = repository_info["action"]
+    if action != "closed":
+        return {"message": "It is not a closed action, do nothing!"}
     # 启动线程执行构建
     executor.submit(exec_build, repository_info)
 
